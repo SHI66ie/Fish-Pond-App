@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const serverless = require('serverless-http');
 
 dotenv.config();
 
@@ -13,15 +14,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.get('/', (req, res) => {
+// When deployed to Netlify, the function path might be /.netlify/functions/server
+// We can use a router for /api
+const router = express.Router();
+
+router.get('/', (req, res) => {
   res.json({ message: 'Fish Pond API is running' });
 });
 
 // Import routes (will be created later)
-// app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/ponds', require('./routes/ponds'));
-// app.use('/api/fish', require('./routes/fish'));
+// router.use('/auth', require('./routes/auth'));
+// router.use('/ponds', require('./routes/ponds'));
+// router.use('/fish', require('./routes/fish'));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Use the router with a base path for Netlify Functions or local development
+app.use('/api', router);
+
+// Also add a fallback for direct hits to the root of the function or local server
+app.get('/', (req, res) => {
+  res.json({ message: 'Fish Pond API is running at /api' });
 });
+
+// Local development server
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+// Export the handler for Netlify Functions
+module.exports.handler = serverless(app);

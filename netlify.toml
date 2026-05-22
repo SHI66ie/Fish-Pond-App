@@ -1,0 +1,20 @@
+[build]
+  # Build the frontend. Netlify will also build the functions found in the functions directory.
+  command = "cd frontend && npm install && npm run build"
+  publish = "frontend/dist"
+
+[functions]
+  directory = "backend"
+  node_bundler = "esbuild"
+
+[[redirects]]
+  # Route API requests to the Netlify serverless function
+  from = "/api/*"
+  to = "/.netlify/functions/server/api/:splat"
+  status = 200
+
+[[redirects]]
+  # Fallback for React Router / SPA client-side routing
+  from = "/*"
+  to = "/index.html"
+  status = 200
