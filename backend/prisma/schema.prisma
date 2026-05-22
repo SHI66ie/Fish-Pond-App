@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pond {
+  id          String   @id @default(uuid())
+  name        String
+  location    String
+  size        Float    // in square meters
+  depth       Float    // in meters
+  waterType   String   // fresh, brackish, or salt
+  temperature Float?   // in Celsius
+  phLevel     Float?   // pH level
+  oxygenLevel Float?   // dissolved oxygen in mg/L
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  fishStock   FishStock[]
+}
+
+model FishSpecies {
+  id          String   @id @default(uuid())
+  name        String
+  scientificName String?
+  description String?
+  optimalTemp Float?  // optimal temperature in Celsius
+  optimalPH   Float?  // optimal pH level
+  optimalOxygen Float? // optimal oxygen level in mg/L
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  fishStock   FishStock[]
+}
+
+model FishStock {
+  id           String      @id @default(uuid())
+  pondId       String
+  speciesId    String
+  quantity     Int
+  averageWeight Float?    // in kg
+  dateStocked  DateTime   @default(now())
+  notes        String?
+  pond         Pond        @relation(fields: [pondId], references: [id], onDelete: Cascade)
+  species      FishSpecies @relation(fields: [speciesId], references: [id])
+  feeding      Feeding[]
+  health       Health[]
+
+  @@index([pondId])
+  @@index([speciesId])
+}
+
+model Feeding {
+  id          String   @id @default(uuid())
+  fishStockId String
+  feedType    String
+  quantity    Float    // in kg
+  cost        Float?   // cost of feed
+  fedAt       DateTime @default(now())
+  notes       String?
+  fishStock   FishStock @relation(fields: [fishStockId], references: [id], onDelete: Cascade)
+
+  @@index([fishStockId])
+}
+
+model Health {
+  id          String   @id @default(uuid())
+  fishStockId String
+  status      String   // healthy, sick, deceased
+  symptoms    String?
+  treatment   String?
+  checkedAt   DateTime @default(now())
+  notes       String?
+  fishStock   FishStock @relation(fields: [fishStockId], references: [id], onDelete: Cascade)
+
+  @@index([fishStockId])
+}
