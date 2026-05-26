@@ -12,7 +12,7 @@ const FishEditPage = ({ fish, onBack, onSave }) => {
   });
 
   const onSubmit = (data) => {
-    // Process mortality update
+    const healthTextMap = { excellent: 'Excellent', good: 'Good', fair: 'Monitor', poor: 'Poor' };
     let updatedQuantity = parseInt(data.quantity);
     if (data.mortality && parseInt(data.mortality) > 0) {
       updatedQuantity -= parseInt(data.mortality);
@@ -22,7 +22,8 @@ const FishEditPage = ({ fish, onBack, onSave }) => {
     onSave({
       ...fish,
       ...data,
-      quantity: updatedQuantity
+      quantity: updatedQuantity,
+      healthText: healthTextMap[data.health] || data.health
     });
   };
 
