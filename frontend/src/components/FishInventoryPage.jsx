@@ -12,7 +12,7 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
     weight: '',
     health: 'good',
     feedType: '',
-    feedingTime: '',
+    feedingTimes: [''],
     notes: ''
   });
 
@@ -31,11 +31,12 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
     onAddFish({
       id: Date.now(),
       ...newFish,
+      feedingTimes: newFish.feedingTimes.filter(t => t.trim() !== ''),
       quantity: parseInt(newFish.quantity),
       weight: newFish.weight,
       healthText: newFish.health.charAt(0).toUpperCase() + newFish.health.slice(1)
     });
-    setNewFish({ species: '', quantity: '', weight: '', health: 'good', feedType: '', feedingTime: '', notes: '' });
+    setNewFish({ species: '', quantity: '', weight: '', health: 'good', feedType: '', feedingTimes: [''], notes: '' });
     setShowAddForm(false);
   };
 
@@ -146,14 +147,42 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <label style={{ fontSize: '14px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Clock size={16} /> Feeding Time
+                <Clock size={16} /> Feeding Times
               </label>
-              <input
-                type="time"
-                value={newFish.feedingTime}
-                onChange={(e) => setNewFish({ ...newFish, feedingTime: e.target.value })}
-                style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
-              />
+              {newFish.feedingTimes.map((time, index) => (
+                <div key={index} style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type="time"
+                    value={time}
+                    onChange={(e) => {
+                      const times = [...newFish.feedingTimes];
+                      times[index] = e.target.value;
+                      setNewFish({ ...newFish, feedingTimes: times });
+                    }}
+                    style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white', flex: 1 }}
+                  />
+                  {newFish.feedingTimes.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const times = [...newFish.feedingTimes];
+                        times.splice(index, 1);
+                        setNewFish({ ...newFish, feedingTimes: times });
+                      }}
+                      style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--accent-red)', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--accent-red)', cursor: 'pointer' }}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setNewFish({ ...newFish, feedingTimes: [...newFish.feedingTimes, ''] })}
+                style={{ padding: '8px', borderRadius: '8px', border: '1px dashed var(--border-color)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '12px' }}
+              >
+                + Add Another Time
+              </button>
             </div>
 
             <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -235,7 +264,7 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
                 <th>Total Weight</th>
                 <th>Health Status</th>
                 <th>Feed Type</th>
-                <th>Feeding Time</th>
+                <th>Feeding Times</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -257,7 +286,16 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
                     </div>
                   </td>
                   <td>{fish.feedType || '-'}</td>
-                  <td>{fish.feedingTime || '-'}</td>
+                  <td>
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      {fish.feedingTimes?.map((t, i) => (
+                        <span key={i} style={{ background: 'var(--bg-surface-elevated)', padding: '2px 6px', borderRadius: '4px', fontSize: '12px', border: '1px solid var(--border-color)' }}>
+                          {t}
+                        </span>
+                      ))}
+                      {(!fish.feedingTimes || fish.feedingTimes.length === 0) && '-'}
+                    </div>
+                  </td>
                   <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button

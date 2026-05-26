@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ChevronLeft, Save, Trash2, HeartPulse, Scale, Dna, Clock, Utensils } from 'lucide-react';
+import { ChevronLeft, Save, Trash2, HeartPulse, Scale, Dna, Clock, Utensils, Plus } from 'lucide-react';
 
 const FishEditPage = ({ fish, onBack, onSave }) => {
+  const [feedingTimes, setFeedingTimes] = useState(fish?.feedingTimes || []);
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       ...fish,
@@ -22,6 +23,7 @@ const FishEditPage = ({ fish, onBack, onSave }) => {
     onSave({
       ...fish,
       ...data,
+      feedingTimes: feedingTimes.filter(t => t.trim() !== ''),
       quantity: updatedQuantity,
       healthText: healthTextMap[data.health] || data.health
     });
@@ -134,13 +136,40 @@ const FishEditPage = ({ fish, onBack, onSave }) => {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <label style={{ fontSize: '14px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Clock size={16} /> Feeding Time
+                <Clock size={16} /> Feeding Times
               </label>
-              <input
-                type="time"
-                {...register("feedingTime")}
-                style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
-              />
+              {feedingTimes.map((time, index) => (
+                <div key={index} style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type="time"
+                    value={time}
+                    onChange={(e) => {
+                      const times = [...feedingTimes];
+                      times[index] = e.target.value;
+                      setFeedingTimes(times);
+                    }}
+                    style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white', flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const times = [...feedingTimes];
+                      times.splice(index, 1);
+                      setFeedingTimes(times);
+                    }}
+                    style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--accent-red)', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--accent-red)', cursor: 'pointer' }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setFeedingTimes([...feedingTimes, ''])}
+                style={{ padding: '8px', borderRadius: '8px', border: '1px dashed var(--border-color)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
+              >
+                <Plus size={14} /> Add Another Time
+              </button>
             </div>
           </div>
 

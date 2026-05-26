@@ -7,14 +7,15 @@ import {
 } from 'lucide-react';
 import FishEditPage from './components/FishEditPage';
 import FishInventoryPage from './components/FishInventoryPage';
+import FeedingSchedulePage from './components/FeedingSchedulePage';
 import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [fishInventory, setFishInventory] = useState([
-    { id: 1, species: 'Koi (Kohaku)', quantity: 450, weight: '1.2', health: 'excellent', healthText: 'Excellent', feedType: 'Protein Pellets', feedingTime: '08:00' },
-    { id: 2, species: 'Tilapia', quantity: 620, weight: '0.8', health: 'good', healthText: 'Good', feedType: 'Mixed Feed', feedingTime: '14:00' },
-    { id: 3, species: 'Catfish', quantity: 170, weight: '2.5', health: 'fair', healthText: 'Monitor', feedType: 'Sinking Pellets', feedingTime: '20:00' }
+    { id: 1, species: 'Koi (Kohaku)', quantity: 450, weight: '1.2', health: 'excellent', healthText: 'Excellent', feedType: 'Protein Pellets', feedingTimes: ['08:00', '16:00'] },
+    { id: 2, species: 'Tilapia', quantity: 620, weight: '0.8', health: 'good', healthText: 'Good', feedType: 'Mixed Feed', feedingTimes: ['10:00', '14:00'] },
+    { id: 3, species: 'Catfish', quantity: 170, weight: '2.5', health: 'fair', healthText: 'Monitor', feedType: 'Sinking Pellets', feedingTimes: ['20:00'] }
   ]);
   const [editingFishId, setEditingFishId] = useState(null);
   const [editFishQty, setEditFishQty] = useState('');
@@ -288,12 +289,12 @@ function App() {
                 </div>
                 <div className="feed-schedule">
                   {fishInventory
-                    .filter(fish => fish.feedingTime)
-                    .sort((a, b) => a.feedingTime.localeCompare(b.feedingTime))
-                    .map(fish => (
-                      <div className="feed-item" key={fish.id}>
+                    .flatMap(fish => (fish.feedingTimes || []).map(time => ({ ...fish, time })))
+                    .sort((a, b) => a.time.localeCompare(b.time))
+                    .map((fish, idx) => (
+                      <div className="feed-item" key={`${fish.id}-${idx}`}>
                         <div className="feed-info">
-                          <div className="feed-time">{fish.feedingTime}</div>
+                          <div className="feed-time">{fish.time}</div>
                           <div className="feed-details">
                             <h4>{fish.feedType || 'Standard Feed'} ({fish.species})</h4>
                             <p>{fish.quantity.toLocaleString()} fish • {fish.weight}kg avg</p>
@@ -302,7 +303,7 @@ function App() {
                         <span className="status-badge upcoming">Scheduled</span>
                       </div>
                     ))}
-                  {fishInventory.filter(fish => fish.feedingTime).length === 0 && (
+                  {fishInventory.flatMap(fish => fish.feedingTimes || []).length === 0 && (
                     <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)' }}>
                       No feeding schedule set. Add feeding times in Fish Inventory.
                     </div>
@@ -336,6 +337,14 @@ function App() {
             onSave={(data) => {
               setFishInventory(fishInventory.map(f => f.id === data.id ? { ...f, ...data } : f));
               setActiveTab('fish');
+            }}
+          />
+        )}
+        {activeTab === 'feed' && (
+          <FeedingSchedulePage 
+            inventory={fishInventory}
+            onUpdateFish={(updatedFish) => {
+              setFishInventory(fishInventory.map(f => f.id === updatedFish.id ? updatedFish : f));
             }}
           />
         )}
