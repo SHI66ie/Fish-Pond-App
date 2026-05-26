@@ -9,6 +9,7 @@ import FishEditPage from './components/FishEditPage';
 import FishInventoryPage from './components/FishInventoryPage';
 import FeedingSchedulePage from './components/FeedingSchedulePage';
 import SettingsPage from './components/SettingsPage';
+import ActivityLogPage from './components/ActivityLogPage';
 import './App.css';
 
 function App() {
@@ -19,6 +20,26 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('aquapond-theme', theme);
   }, [theme]);
+
+  const [auditLogs, setAuditLogs] = useState(() => {
+    const saved = localStorage.getItem('aquapond-audit-logs');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('aquapond-audit-logs', JSON.stringify(auditLogs));
+  }, [auditLogs]);
+
+  const addLog = (action, entity, details) => {
+    const newLog = {
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
+      timestamp: new Date().toLocaleString(),
+      action,
+      entity,
+      details,
+    };
+    setAuditLogs(prev => [newLog, ...prev]);
+  };
 
   const [fishInventory, setFishInventory] = useState([
     { id: 1, species: 'Koi (Kohaku)', quantity: 450, weight: '1.2', health: 'excellent', healthText: 'Excellent', feedType: 'Protein Pellets', feedingTimes: ['08:00', '16:00'] },
@@ -35,6 +56,8 @@ function App() {
   };
 
   const saveQuickEdit = (id) => {
+    const fish = fishInventory.find(f => f.id === id);
+    if (fish) addLog('UPDATE', 'Fish Inventory', `Quick edited quantity for ${fish.species} to ${editFishQty}`);
     setFishInventory(fishInventory.map(f => f.id === id ? { ...f, quantity: parseInt(editFishQty) } : f));
     setEditingFishId(null);
   };
@@ -45,14 +68,18 @@ function App() {
   };
 
   const handleAddFish = (newFish) => {
+    addLog('CREATE', 'Fish Inventory', `Added new fish record: ${newFish.species}`);
     setFishInventory([...fishInventory, newFish]);
   };
 
   const handleUpdateFish = (updatedFish) => {
+    addLog('UPDATE', 'Fish Inventory', `Extensively edited details for ${updatedFish.species}`);
     setFishInventory(fishInventory.map(f => f.id === updatedFish.id ? updatedFish : f));
   };
 
   const handleDeleteFish = (fishId) => {
+    const fishToDelete = fishInventory.find(f => f.id === fishId);
+    if (fishToDelete) addLog('DELETE', 'Fish Inventory', `Deleted fish record: ${fishToDelete.species}`);
     setFishInventory(fishInventory.filter(f => f.id !== fishId));
   };
 
@@ -61,6 +88,7 @@ function App() {
     { id: 'fish', label: 'Fish Inventory', icon: <Fish /> },
     { id: 'water', label: 'Water Sensors', icon: <Waves /> },
     { id: 'feed', label: 'Feeding Schedule', icon: <CalendarClock /> },
+    { id: 'logs', label: 'Activity Logs', icon: <Activity /> },
     { id: 'settings', label: 'Settings', icon: <Settings /> }
   ];
 
@@ -106,6 +134,9 @@ function App() {
           </div>
           
           <div className="topbar-actions">
+            <button className="action-btn" onClick={() => setActiveTab('settings')} title="Settings">
+              <Settings size={20} />
+            </button>
             <button className="action-btn">
               <Bell size={20} />
               <span className="badge">3</span>
@@ -352,9 +383,21 @@ function App() {
           <FeedingSchedulePage 
             inventory={fishInventory}
             onUpdateFish={(updatedFish) => {
+              const oldFish = fishInventory.find(f => f.id === updatedFish.id);
+              if (oldFish) {
+                 if ((oldFish.feedingTimes?.length || 0) < (updatedFish.feedingTimes?.length || 0)) {
+                   addLog('UPDATE', 'Feeding Schedule', `Added feeding time for ${updatedFish.species}`);
+                 } else if ((oldFish.feedingTimes?.length || 0) > (updatedFish.feedingTimes?.length || 0)) {
+                   addLog('UPDATE', 'Feeding Schedule', `Removed feeding time for ${updatedFish.species}`);
+                 }
+              }
               setFishInventory(fishInventory.map(f => f.id === updatedFish.id ? updatedFish : f));
             }}
           />
+        )}
+
+        {activeTab === 'logs' && (
+          <ActivityLogPage logs={auditLogs} />
         )}
 
         {activeTab === 'settings' && (
