@@ -3,7 +3,7 @@ import {
   Droplet, Thermometer, Activity, Settings, LayoutDashboard, 
   Fish, Bell, Search, Waves, CalendarClock, AlertTriangle, 
   Info, ArrowUpRight, ArrowDownRight, Wind, TrendingUp, TrendingDown,
-  Edit2, Save, X, MoreHorizontal, ChevronLeft
+  Edit2, Save, X, MoreHorizontal, ChevronLeft, Sun, Moon
 } from 'lucide-react';
 import FishEditPage from './components/FishEditPage';
 import FishInventoryPage from './components/FishInventoryPage';
@@ -134,8 +134,12 @@ function App() {
           </div>
           
           <div className="topbar-actions">
-            <button className="action-btn" onClick={() => setActiveTab('settings')} title="Settings">
-              <Settings size={20} />
+            <button 
+              className="action-btn" 
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+              title="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <button className="action-btn">
               <Bell size={20} />
