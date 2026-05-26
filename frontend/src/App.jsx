@@ -99,7 +99,7 @@ function App() {
         </header>
 
         {/* Dashboard Content */}
-        {activeTab === 'dashboard' && (
+        {activeTab !== 'fish-edit' && (
           <div className="dashboard-content">
           <div className="dashboard-header">
             <div className="dashboard-title">
