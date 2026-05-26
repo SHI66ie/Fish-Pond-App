@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { ChevronLeft, Save, Trash2, HeartPulse, Scale, Dna } from 'lucide-react';
+import { ChevronLeft, Save, Trash2, HeartPulse, Scale, Dna, Clock, Utensils } from 'lucide-react';
 
 const FishEditPage = ({ fish, onBack, onSave }) => {
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -100,7 +100,7 @@ const FishEditPage = ({ fish, onBack, onSave }) => {
             <label style={{ fontSize: '14px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <HeartPulse size={16} /> Health Status & Notes
             </label>
-            <select 
+            <select
               {...register("health")}
               style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white', marginBottom: '12px' }}
             >
@@ -110,12 +110,38 @@ const FishEditPage = ({ fish, onBack, onSave }) => {
               <option value="poor">Poor</option>
             </select>
 
-            <textarea 
-              {...register("notes")} 
+            <textarea
+              {...register("notes")}
               placeholder="Add details about treatment, symptoms, or feeding behavior..."
               rows={4}
-              style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white', resize: 'vertical' }} 
+              style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white', resize: 'vertical' }}
             />
+          </div>
+
+          <hr style={{ borderColor: 'var(--border-color)', opacity: 0.5 }} />
+
+          <div className="grid grid-cols-2" style={{ gap: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '14px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Utensils size={16} /> Feed Type
+              </label>
+              <input
+                {...register("feedType")}
+                style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
+                placeholder="e.g., Protein Pellets"
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '14px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Clock size={16} /> Feeding Time
+              </label>
+              <input
+                type="time"
+                {...register("feedingTime")}
+                style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
+              />
+            </div>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}>

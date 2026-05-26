@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, Search, Filter, ArrowUpDown, Fish, Scale, HeartPulse } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Filter, ArrowUpDown, Fish, Scale, HeartPulse, Clock, Utensils } from 'lucide-react';
 
 const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onBack }) => {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -11,6 +11,8 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
     quantity: '',
     weight: '',
     health: 'good',
+    feedType: '',
+    feedingTime: '',
     notes: ''
   });
 
@@ -33,7 +35,7 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
       weight: newFish.weight,
       healthText: newFish.health.charAt(0).toUpperCase() + newFish.health.slice(1)
     });
-    setNewFish({ species: '', quantity: '', weight: '', health: 'good', notes: '' });
+    setNewFish({ species: '', quantity: '', weight: '', health: 'good', feedType: '', feedingTime: '', notes: '' });
     setShowAddForm(false);
   };
 
@@ -129,6 +131,31 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
               </select>
             </div>
 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '14px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Utensils size={16} /> Feed Type
+              </label>
+              <input
+                type="text"
+                value={newFish.feedType}
+                onChange={(e) => setNewFish({ ...newFish, feedType: e.target.value })}
+                style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
+                placeholder="e.g., Protein Pellets, Mixed Feed"
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '14px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Clock size={16} /> Feeding Time
+              </label>
+              <input
+                type="time"
+                value={newFish.feedingTime}
+                onChange={(e) => setNewFish({ ...newFish, feedingTime: e.target.value })}
+                style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
+              />
+            </div>
+
             <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <label style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Notes</label>
               <textarea
@@ -207,6 +234,8 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
                 <th>Avg Weight</th>
                 <th>Total Weight</th>
                 <th>Health Status</th>
+                <th>Feed Type</th>
+                <th>Feeding Time</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -227,6 +256,8 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
                       {fish.healthText}
                     </div>
                   </td>
+                  <td>{fish.feedType || '-'}</td>
+                  <td>{fish.feedingTime || '-'}</td>
                   <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button
@@ -249,7 +280,7 @@ const FishInventoryPage = ({ inventory, onAddFish, onEditFish, onDeleteFish, onB
               ))}
               {filteredAndSortedInventory.length === 0 && (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
                     No fish found. Add your first fish to get started!
                   </td>
                 </tr>

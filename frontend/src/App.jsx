@@ -12,9 +12,9 @@ import './App.css';
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [fishInventory, setFishInventory] = useState([
-    { id: 1, species: 'Koi (Kohaku)', quantity: 450, weight: '1.2', health: 'excellent', healthText: 'Excellent' },
-    { id: 2, species: 'Tilapia', quantity: 620, weight: '0.8', health: 'good', healthText: 'Good' },
-    { id: 3, species: 'Catfish', quantity: 170, weight: '2.5', health: 'fair', healthText: 'Monitor' }
+    { id: 1, species: 'Koi (Kohaku)', quantity: 450, weight: '1.2', health: 'excellent', healthText: 'Excellent', feedType: 'Protein Pellets', feedingTime: '08:00' },
+    { id: 2, species: 'Tilapia', quantity: 620, weight: '0.8', health: 'good', healthText: 'Good', feedType: 'Mixed Feed', feedingTime: '14:00' },
+    { id: 3, species: 'Catfish', quantity: 170, weight: '2.5', health: 'fair', healthText: 'Monitor', feedType: 'Sinking Pellets', feedingTime: '20:00' }
   ]);
   const [editingFishId, setEditingFishId] = useState(null);
   const [editFishQty, setEditFishQty] = useState('');
@@ -283,40 +283,30 @@ function App() {
               {/* Feed Schedule */}
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title">Today's Feeding</h3>
+                  <h3 className="card-title">Today's Feeding Schedule</h3>
                   <span className="card-action">Manage</span>
                 </div>
                 <div className="feed-schedule">
-                  <div className="feed-item">
-                    <div className="feed-info">
-                      <div className="feed-time">08:00</div>
-                      <div className="feed-details">
-                        <h4>Morning Feed (Protein)</h4>
-                        <p>Zone A & B • 2.5kg</p>
+                  {fishInventory
+                    .filter(fish => fish.feedingTime)
+                    .sort((a, b) => a.feedingTime.localeCompare(b.feedingTime))
+                    .map(fish => (
+                      <div className="feed-item" key={fish.id}>
+                        <div className="feed-info">
+                          <div className="feed-time">{fish.feedingTime}</div>
+                          <div className="feed-details">
+                            <h4>{fish.feedType || 'Standard Feed'} ({fish.species})</h4>
+                            <p>{fish.quantity.toLocaleString()} fish • {fish.weight}kg avg</p>
+                          </div>
+                        </div>
+                        <span className="status-badge upcoming">Scheduled</span>
                       </div>
+                    ))}
+                  {fishInventory.filter(fish => fish.feedingTime).length === 0 && (
+                    <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                      No feeding schedule set. Add feeding times in Fish Inventory.
                     </div>
-                    <span className="status-badge completed">Done</span>
-                  </div>
-                  <div className="feed-item">
-                    <div className="feed-info">
-                      <div className="feed-time">14:00</div>
-                      <div className="feed-details">
-                        <h4>Afternoon Feed (Mix)</h4>
-                        <p>All Zones • 3.0kg</p>
-                      </div>
-                    </div>
-                    <span className="status-badge completed">Done</span>
-                  </div>
-                  <div className="feed-item">
-                    <div className="feed-info">
-                      <div className="feed-time">20:00</div>
-                      <div className="feed-details">
-                        <h4>Evening Feed (Light)</h4>
-                        <p>Zone A • 1.5kg</p>
-                      </div>
-                    </div>
-                    <span className="status-badge upcoming">Upcoming</span>
-                  </div>
+                  )}
                 </div>
               </div>
 
