@@ -6,6 +6,7 @@ import {
   Edit2, Save, X, MoreHorizontal, ChevronLeft
 } from 'lucide-react';
 import FishEditPage from './components/FishEditPage';
+import FishInventoryPage from './components/FishInventoryPage';
 import './App.css';
 
 function App() {
@@ -32,6 +33,18 @@ function App() {
   const openDetailedEdit = (fish) => {
     setSelectedFish(fish);
     setActiveTab('fish-edit');
+  };
+
+  const handleAddFish = (newFish) => {
+    setFishInventory([...fishInventory, newFish]);
+  };
+
+  const handleUpdateFish = (updatedFish) => {
+    setFishInventory(fishInventory.map(f => f.id === updatedFish.id ? updatedFish : f));
+  };
+
+  const handleDeleteFish = (fishId) => {
+    setFishInventory(fishInventory.filter(f => f.id !== fishId));
   };
 
   const navItems = [
@@ -99,7 +112,7 @@ function App() {
         </header>
 
         {/* Dashboard Content */}
-        {activeTab !== 'fish-edit' && (
+        {activeTab === 'dashboard' && (
           <div className="dashboard-content">
           <div className="dashboard-header">
             <div className="dashboard-title">
@@ -313,13 +326,26 @@ function App() {
         </div>
         )}
 
+        {activeTab === 'fish' && (
+          <FishInventoryPage 
+            inventory={fishInventory}
+            onAddFish={handleAddFish}
+            onEditFish={(fish) => {
+              setSelectedFish(fish);
+              setActiveTab('fish-edit');
+            }}
+            onDeleteFish={handleDeleteFish}
+            onBack={() => setActiveTab('dashboard')}
+          />
+        )}
+
         {activeTab === 'fish-edit' && (
           <FishEditPage 
             fish={selectedFish} 
-            onBack={() => setActiveTab('dashboard')} 
+            onBack={() => setActiveTab('fish')} 
             onSave={(data) => {
               setFishInventory(fishInventory.map(f => f.id === data.id ? { ...f, ...data } : f));
-              setActiveTab('dashboard');
+              setActiveTab('fish');
             }}
           />
         )}
