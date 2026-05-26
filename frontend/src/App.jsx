@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Droplet, Thermometer, Activity, Settings, LayoutDashboard, 
   Fish, Bell, Search, Waves, CalendarClock, AlertTriangle, 
@@ -8,10 +8,18 @@ import {
 import FishEditPage from './components/FishEditPage';
 import FishInventoryPage from './components/FishInventoryPage';
 import FeedingSchedulePage from './components/FeedingSchedulePage';
+import SettingsPage from './components/SettingsPage';
 import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [theme, setTheme] = useState(() => localStorage.getItem('aquapond-theme') || 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('aquapond-theme', theme);
+  }, [theme]);
+
   const [fishInventory, setFishInventory] = useState([
     { id: 1, species: 'Koi (Kohaku)', quantity: 450, weight: '1.2', health: 'excellent', healthText: 'Excellent', feedType: 'Protein Pellets', feedingTimes: ['08:00', '16:00'] },
     { id: 2, species: 'Tilapia', quantity: 620, weight: '0.8', health: 'good', healthText: 'Good', feedType: 'Mixed Feed', feedingTimes: ['10:00', '14:00'] },
@@ -346,6 +354,13 @@ function App() {
             onUpdateFish={(updatedFish) => {
               setFishInventory(fishInventory.map(f => f.id === updatedFish.id ? updatedFish : f));
             }}
+          />
+        )}
+
+        {activeTab === 'settings' && (
+          <SettingsPage 
+            theme={theme}
+            onThemeChange={setTheme}
           />
         )}
       </main>
