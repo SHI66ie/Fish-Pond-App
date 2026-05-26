@@ -22,10 +22,11 @@ router.get('/', (req, res) => {
   res.json({ message: 'Fish Pond API is running' });
 });
 
-// Import routes (will be created later)
+// Import routes
 // router.use('/auth', require('./routes/auth'));
 // router.use('/ponds', require('./routes/ponds'));
 // router.use('/fish', require('./routes/fish'));
+router.use('/transactions', require('./routes/transactions'));
 
 // Use the router with a base path for Netlify Functions or local development
 app.use('/api', router);

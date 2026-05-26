@@ -24,6 +24,7 @@ model Pond {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   fishStock   FishStock[]
+  transactions Transaction[]
 }
 
 model FishSpecies {
@@ -80,4 +81,19 @@ model Health {
   fishStock   FishStock @relation(fields: [fishStockId], references: [id], onDelete: Cascade)
 
   @@index([fishStockId])
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  type        String   // "INCOME" or "EXPENSE"
+  category    String   // e.g., "SALES", "FEED", "MAINTENANCE", "OTHER"
+  amount      Float
+  date        DateTime @default(now())
+  description String?
+  pondId      String?
+  pond        Pond?    @relation(fields: [pondId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([pondId])
 }

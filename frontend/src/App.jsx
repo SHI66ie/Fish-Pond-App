@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Droplet, Thermometer, Activity, Settings, LayoutDashboard, 
   Fish, Bell, Search, Waves, CalendarClock, AlertTriangle, 
-  Info, ArrowUpRight, ArrowDownRight, Wind
+  Info, ArrowUpRight, ArrowDownRight, Wind, TrendingUp, TrendingDown
 } from 'lucide-react';
 import './App.css';
 
@@ -112,6 +112,39 @@ function App() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Financial Overview */}
+          <div className="financial-overview-section" style={{ marginTop: '24px', marginBottom: '24px' }}>
+            <div className="card financial-card">
+              <div className="card-header">
+                <h3 className="card-title">Financial Overview</h3>
+                <span className="card-action">View Report</span>
+              </div>
+              <div className="financial-stats-container">
+                <div className="fin-stat income">
+                  <div className="fin-icon-wrapper"><TrendingUp size={20} /></div>
+                  <div className="fin-details">
+                    <span className="fin-label">Total Income</span>
+                    <h4 className="fin-amount">$4,520.00</h4>
+                  </div>
+                </div>
+                <div className="fin-stat expenses">
+                  <div className="fin-icon-wrapper"><TrendingDown size={20} /></div>
+                  <div className="fin-details">
+                    <span className="fin-label">Total Expenses</span>
+                    <h4 className="fin-amount">$1,240.50</h4>
+                  </div>
+                </div>
+                <div className="fin-stat net">
+                  <div className="fin-icon-wrapper"><Activity size={20} /></div>
+                  <div className="fin-details">
+                    <span className="fin-label">Net Profit</span>
+                    <h4 className="fin-amount">$3,279.50</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Main Grid Layout */}
