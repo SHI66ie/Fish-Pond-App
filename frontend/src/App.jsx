@@ -2,12 +2,37 @@ import React, { useState } from 'react';
 import { 
   Droplet, Thermometer, Activity, Settings, LayoutDashboard, 
   Fish, Bell, Search, Waves, CalendarClock, AlertTriangle, 
-  Info, ArrowUpRight, ArrowDownRight, Wind, TrendingUp, TrendingDown
+  Info, ArrowUpRight, ArrowDownRight, Wind, TrendingUp, TrendingDown,
+  Edit2, Save, X, MoreHorizontal, ChevronLeft
 } from 'lucide-react';
+import FishEditPage from './components/FishEditPage';
 import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [fishInventory, setFishInventory] = useState([
+    { id: 1, species: 'Koi (Kohaku)', quantity: 450, weight: '1.2', health: 'excellent', healthText: 'Excellent' },
+    { id: 2, species: 'Tilapia', quantity: 620, weight: '0.8', health: 'good', healthText: 'Good' },
+    { id: 3, species: 'Catfish', quantity: 170, weight: '2.5', health: 'fair', healthText: 'Monitor' }
+  ]);
+  const [editingFishId, setEditingFishId] = useState(null);
+  const [editFishQty, setEditFishQty] = useState('');
+  const [selectedFish, setSelectedFish] = useState(null);
+
+  const handleQuickEdit = (fish) => {
+    setEditingFishId(fish.id);
+    setEditFishQty(fish.quantity);
+  };
+
+  const saveQuickEdit = (id) => {
+    setFishInventory(fishInventory.map(f => f.id === id ? { ...f, quantity: parseInt(editFishQty) } : f));
+    setEditingFishId(null);
+  };
+
+  const openDetailedEdit = (fish) => {
+    setSelectedFish(fish);
+    setActiveTab('fish-edit');
+  };
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
@@ -74,7 +99,8 @@ function App() {
         </header>
 
         {/* Dashboard Content */}
-        <div className="dashboard-content">
+        {activeTab === 'dashboard' && (
+          <div className="dashboard-content">
           <div className="dashboard-header">
             <div className="dashboard-title">
               <h1>Overview</h1>
@@ -166,54 +192,54 @@ function App() {
                         <th>Quantity</th>
                         <th>Avg Weight</th>
                         <th>Health Status</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>
-                          <div className="fish-cell">
-                            <span className="fish-name">Koi (Kohaku)</span>
-                          </div>
-                        </td>
-                        <td>450</td>
-                        <td>1.2 kg</td>
-                        <td>
-                          <div className="health-status">
-                            <span className="health-dot excellent"></span>
-                            Excellent
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div className="fish-cell">
-                            <span className="fish-name">Tilapia</span>
-                          </div>
-                        </td>
-                        <td>620</td>
-                        <td>0.8 kg</td>
-                        <td>
-                          <div className="health-status">
-                            <span className="health-dot good"></span>
-                            Good
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div className="fish-cell">
-                            <span className="fish-name">Catfish</span>
-                          </div>
-                        </td>
-                        <td>170</td>
-                        <td>2.5 kg</td>
-                        <td>
-                          <div className="health-status">
-                            <span className="health-dot fair"></span>
-                            Monitor
-                          </div>
-                        </td>
-                      </tr>
+                      {fishInventory.map(fish => (
+                        <tr key={fish.id}>
+                          <td>
+                            <div className="fish-cell">
+                              <span className="fish-name">{fish.species}</span>
+                            </div>
+                          </td>
+                          <td>
+                            {editingFishId === fish.id ? (
+                              <input 
+                                type="number" 
+                                className="quick-edit-input"
+                                value={editFishQty}
+                                onChange={(e) => setEditFishQty(e.target.value)}
+                                style={{ width: '70px', padding: '4px', borderRadius: '4px', background: 'var(--bg-surface-elevated)', color: 'white', border: '1px solid var(--accent-cyan)' }}
+                              />
+                            ) : (
+                              fish.quantity
+                            )}
+                          </td>
+                          <td>{fish.weight} kg</td>
+                          <td>
+                            <div className="health-status">
+                              <span className={`health-dot ${fish.health}`}></span>
+                              {fish.healthText}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="action-buttons" style={{ display: 'flex', gap: '8px' }}>
+                              {editingFishId === fish.id ? (
+                                <>
+                                  <button onClick={() => saveQuickEdit(fish.id)} style={{ background: 'none', border: 'none', color: 'var(--accent-green)', cursor: 'pointer' }}><Save size={16} /></button>
+                                  <button onClick={() => setEditingFishId(null)} style={{ background: 'none', border: 'none', color: 'var(--accent-red)', cursor: 'pointer' }}><X size={16} /></button>
+                                </>
+                              ) : (
+                                <>
+                                  <button onClick={() => handleQuickEdit(fish)} title="Quick Edit Quantity" style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer' }}><Edit2 size={16} /></button>
+                                  <button onClick={() => openDetailedEdit(fish)} title="Extensive Edit" style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><MoreHorizontal size={16} /></button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -285,6 +311,18 @@ function App() {
           </div>
 
         </div>
+        )}
+
+        {activeTab === 'fish-edit' && (
+          <FishEditPage 
+            fish={selectedFish} 
+            onBack={() => setActiveTab('dashboard')} 
+            onSave={(data) => {
+              setFishInventory(fishInventory.map(f => f.id === data.id ? { ...f, ...data } : f));
+              setActiveTab('dashboard');
+            }}
+          />
+        )}
       </main>
     </div>
   );
