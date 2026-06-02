@@ -12,6 +12,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
     category: 'Feed',
     amount: '',
     description: '',
+    comment: '',
     date: new Date().toISOString().split('T')[0]
   });
 
@@ -22,6 +23,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
     category: 'Feed',
     amount: '',
     description: '',
+    comment: '',
     date: ''
   });
 
@@ -69,6 +71,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
       category: newTrans.category,
       amount: parseFloat(newTrans.amount),
       description: newTrans.description,
+      comment: newTrans.comment,
       date: newTrans.date
     });
 
@@ -77,6 +80,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
       category: 'Feed',
       amount: '',
       description: '',
+      comment: '',
       date: new Date().toISOString().split('T')[0]
     });
     setShowAddForm(false);
@@ -89,6 +93,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
       category: t.category,
       amount: t.amount,
       description: t.description || '',
+      comment: t.comment || '',
       date: t.date || new Date().toISOString().split('T')[0]
     });
   };
@@ -101,6 +106,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
       category: editTrans.category,
       amount: parseFloat(editTrans.amount),
       description: editTrans.description,
+      comment: editTrans.comment,
       date: editTrans.date
     });
     setEditingId(null);
@@ -271,13 +277,24 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
               />
             </div>
 
-            <div style={{ gridColumn: 'span 3', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <label style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Description</label>
               <input
                 type="text"
                 placeholder="e.g., Purchased 5 bags of protein grower pellets"
                 value={newTrans.description}
                 onChange={(e) => setNewTrans({ ...newTrans, description: e.target.value })}
+                style={{ padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
+              />
+            </div>
+
+            <div style={{ gridColumn: 'span 1', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Comment / Audit Notes</label>
+              <input
+                type="text"
+                placeholder="e.g., Approved, check clearance"
+                value={newTrans.comment}
+                onChange={(e) => setNewTrans({ ...newTrans, comment: e.target.value })}
                 style={{ padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)', color: 'white' }}
               />
             </div>
@@ -425,6 +442,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                   <th>Type</th>
                   <th>Category</th>
                   <th>Description</th>
+                  <th>Comment</th>
                   <th>Amount</th>
                   <th>Actions</th>
                 </tr>
@@ -487,6 +505,15 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                         </td>
                         <td>
                           <input
+                            type="text"
+                            value={editTrans.comment}
+                            onChange={(e) => setEditTrans({ ...editTrans, comment: e.target.value })}
+                            placeholder="Add comments..."
+                            style={{ padding: '6px', background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)', color: 'white', borderRadius: '4px', width: '100%' }}
+                          />
+                        </td>
+                        <td>
+                          <input
                             type="number"
                             step="0.01"
                             value={editTrans.amount}
@@ -532,6 +559,9 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                           <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>{t.description || '-'}</span>
                         </td>
                         <td>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '13px', fontStyle: 'italic' }}>{t.comment || '-'}</span>
+                        </td>
+                        <td>
                           <span style={{ fontWeight: '600', color: t.type === 'INCOME' ? 'var(--accent-green)' : 'var(--text-primary)' }}>
                             {t.type === 'INCOME' ? '+' : '-'}${parseFloat(t.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
@@ -548,7 +578,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                 ))}
                 {transactions.length === 0 && (
                   <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                    <td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
                       No transactions recorded. Record an income or expense to begin.
                     </td>
                   </tr>

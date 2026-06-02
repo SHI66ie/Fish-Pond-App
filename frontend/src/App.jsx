@@ -59,12 +59,12 @@ function App() {
     
     // Initial seed data
     return [
-      { id: 't1', type: 'INCOME', category: 'Sales', amount: 4520.00, description: 'Sold 300kg of Koi harvest to distributors', date: '2026-05-15' },
-      { id: 't2', type: 'EXPENSE', category: 'Feed', amount: 650.00, description: 'Purchased grower protein pellets', date: '2026-05-18' },
-      { id: 't3', type: 'EXPENSE', category: 'Medicine', amount: 120.00, description: 'Water bio-treatment chemical dose', date: '2026-05-20' },
-      { id: 't4', type: 'INCOME', category: 'Sales', amount: 2120.00, description: 'Sold 150kg of Catfish crop', date: '2026-05-22' },
-      { id: 't5', type: 'EXPENSE', category: 'Maintenance', amount: 350.00, description: 'Aerator filter maintenance', date: '2026-05-25' },
-      { id: 't6', type: 'EXPENSE', category: 'Labor', amount: 320.50, description: 'Assistant technician wage', date: '2026-05-26' }
+      { id: 't1', type: 'INCOME', category: 'Sales', amount: 4520.00, description: 'Sold 300kg of Koi harvest to distributors', comment: 'Wire transfer cleared', date: '2026-05-15' },
+      { id: 't2', type: 'EXPENSE', category: 'Feed', amount: 650.00, description: 'Purchased grower protein pellets', comment: 'Receipt #29384', date: '2026-05-18' },
+      { id: 't3', type: 'EXPENSE', category: 'Medicine', amount: 120.00, description: 'Water bio-treatment chemical dose', comment: 'Emergency algae treatment', date: '2026-05-20' },
+      { id: 't4', type: 'INCOME', category: 'Sales', amount: 2120.00, description: 'Sold 150kg of Catfish crop', comment: 'Paid in cash', date: '2026-05-22' },
+      { id: 't5', type: 'EXPENSE', category: 'Maintenance', amount: 350.00, description: 'Aerator filter maintenance', comment: 'Monthly preventative service', date: '2026-05-25' },
+      { id: 't6', type: 'EXPENSE', category: 'Labor', amount: 320.50, description: 'Assistant technician wage', comment: 'Weekly payroll', date: '2026-05-26' }
     ];
   });
 
