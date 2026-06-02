@@ -3,13 +3,15 @@ import {
   Droplet, Thermometer, Activity, Settings, LayoutDashboard, 
   Fish, Bell, Search, Waves, CalendarClock, AlertTriangle, 
   Info, ArrowUpRight, ArrowDownRight, Wind, TrendingUp, TrendingDown,
-  Edit2, Save, X, MoreHorizontal, ChevronLeft, Sun, Moon
+  Edit2, Save, X, MoreHorizontal, ChevronLeft, Sun, Moon, DollarSign, MessageSquare
 } from 'lucide-react';
 import FishEditPage from './components/FishEditPage';
 import FishInventoryPage from './components/FishInventoryPage';
 import FeedingSchedulePage from './components/FeedingSchedulePage';
 import SettingsPage from './components/SettingsPage';
 import ActivityLogPage from './components/ActivityLogPage';
+import FinancePage from './components/FinancePage';
+import CommentsPage from './components/CommentsPage';
 import './App.css';
 
 function App() {
@@ -50,6 +52,87 @@ function App() {
   const [editFishQty, setEditFishQty] = useState('');
   const [selectedFish, setSelectedFish] = useState(null);
 
+  // Financial Ledger State
+  const [transactions, setTransactions] = useState(() => {
+    const saved = localStorage.getItem('aquapond-transactions');
+    if (saved) return JSON.parse(saved);
+    
+    // Initial seed data
+    return [
+      { id: 't1', type: 'INCOME', category: 'Sales', amount: 4520.00, description: 'Sold 300kg of Koi harvest to distributors', date: '2026-05-15' },
+      { id: 't2', type: 'EXPENSE', category: 'Feed', amount: 650.00, description: 'Purchased grower protein pellets', date: '2026-05-18' },
+      { id: 't3', type: 'EXPENSE', category: 'Medicine', amount: 120.00, description: 'Water bio-treatment chemical dose', date: '2026-05-20' },
+      { id: 't4', type: 'INCOME', category: 'Sales', amount: 2120.00, description: 'Sold 150kg of Catfish crop', date: '2026-05-22' },
+      { id: 't5', type: 'EXPENSE', category: 'Maintenance', amount: 350.00, description: 'Aerator filter maintenance', date: '2026-05-25' },
+      { id: 't6', type: 'EXPENSE', category: 'Labor', amount: 320.50, description: 'Assistant technician wage', date: '2026-05-26' }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('aquapond-transactions', JSON.stringify(transactions));
+  }, [transactions]);
+
+  // Client Comments State (with soft deletion tracking)
+  const [comments, setComments] = useState(() => {
+    const saved = localStorage.getItem('aquapond-comments');
+    if (saved) return JSON.parse(saved);
+
+    // Initial issues
+    return [
+      {
+        id: 'c1',
+        subject: 'Pond C pH fluctuation',
+        content: 'pH readings hit 8.2 today. The Tilapia stock seems active and healthy, but should we buffer the water chemistry?',
+        category: 'Pond Health',
+        priority: 'Medium',
+        authorName: 'Client John',
+        authorRole: 'Client',
+        timestamp: '2026-05-24 09:12 AM',
+        status: 'Pending',
+        deletedByClient: false,
+        replies: []
+      },
+      {
+        id: 'c2',
+        subject: 'Algae bloom west cage',
+        content: 'Heavy blue-green algae bloom starting on the west cage. Need clarification on recommended copper sulfate dosage for this pond size.',
+        category: 'Water Quality',
+        priority: 'High',
+        authorName: 'Client Sarah',
+        authorRole: 'Client',
+        timestamp: '2026-05-25 14:35 PM',
+        status: 'Pending',
+        deletedByClient: false,
+        replies: []
+      },
+      {
+        id: 'c3',
+        subject: 'Request invoice copy',
+        content: 'Could I please get a PDF copy of my wholesale fish sales ledger for last month? Need it for tax reporting.',
+        category: 'Billing & Finance',
+        priority: 'Low',
+        authorName: 'Client David',
+        authorRole: 'Client',
+        timestamp: '2026-05-20 11:20 AM',
+        status: 'Resolved',
+        deletedByClient: false,
+        replies: [
+          {
+            id: 'r1',
+            authorName: 'Admin User',
+            authorRole: 'Admin',
+            content: 'Invoice uploaded directly to your accounting page. Let us know if you need additional exports.',
+            timestamp: '2026-05-20 16:00 PM'
+          }
+        ]
+      }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('aquapond-comments', JSON.stringify(comments));
+  }, [comments]);
+
   const handleQuickEdit = (fish) => {
     setEditingFishId(fish.id);
     setEditFishQty(fish.quantity);
@@ -86,18 +169,32 @@ function App() {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
     { id: 'fish', label: 'Fish Inventory', icon: <Fish /> },
+    { id: 'finance', label: 'Finance & P&L', icon: <DollarSign /> },
     { id: 'water', label: 'Water Sensors', icon: <Waves /> },
     { id: 'feed', label: 'Feeding Schedule', icon: <CalendarClock /> },
+    { id: 'comments', label: 'Client Feedback', icon: <MessageSquare /> },
     { id: 'logs', label: 'Activity Logs', icon: <Activity /> },
     { id: 'settings', label: 'Settings', icon: <Settings /> }
   ];
 
+  const totalFishCount = fishInventory.reduce((sum, f) => sum + f.quantity, 0);
   const statCards = [
     { title: 'Water Temp', value: '24.5', unit: '°C', icon: <Thermometer size={24} />, color: 'blue', trend: 'up', trendVal: '+0.5°' },
     { title: 'Dissolved O2', value: '6.8', unit: 'mg/L', icon: <Wind size={24} />, color: 'cyan', trend: 'neutral', trendVal: 'Stable' },
-    { title: 'Fish Count', value: '1,240', unit: '', icon: <Fish size={24} />, color: 'teal', trend: 'up', trendVal: '+12' },
+    { title: 'Fish Count', value: totalFishCount.toLocaleString(), unit: '', icon: <Fish size={24} />, color: 'teal', trend: 'up', trendVal: `+${fishInventory.length}` },
     { title: 'Water Level', value: '85', unit: '%', icon: <Droplet size={24} />, color: 'purple', trend: 'down', trendVal: '-2%' },
   ];
+
+  // Dynamic P&L Dashboard metrics
+  const totalIncome = transactions
+    .filter(t => t.type === 'INCOME')
+    .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+  const totalExpense = transactions
+    .filter(t => t.type === 'EXPENSE')
+    .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+  const netProfit = totalIncome - totalExpense;
 
   return (
     <div className="app-container">
@@ -199,31 +296,37 @@ function App() {
 
           {/* Financial Overview */}
           <div className="financial-overview-section" style={{ marginTop: '24px', marginBottom: '24px' }}>
-            <div className="card financial-card">
+            <div className="card financial-card" style={{ cursor: 'pointer' }} onClick={() => setActiveTab('finance')}>
               <div className="card-header">
                 <h3 className="card-title">Financial Overview</h3>
-                <span className="card-action">View Report</span>
+                <span className="card-action">View Report →</span>
               </div>
               <div className="financial-stats-container">
                 <div className="fin-stat income">
                   <div className="fin-icon-wrapper"><TrendingUp size={20} /></div>
                   <div className="fin-details">
                     <span className="fin-label">Total Income</span>
-                    <h4 className="fin-amount">$4,520.00</h4>
+                    <h4 className="fin-amount" style={{ color: 'var(--accent-green)' }}>
+                      ${totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </h4>
                   </div>
                 </div>
                 <div className="fin-stat expenses">
                   <div className="fin-icon-wrapper"><TrendingDown size={20} /></div>
                   <div className="fin-details">
                     <span className="fin-label">Total Expenses</span>
-                    <h4 className="fin-amount">$1,240.50</h4>
+                    <h4 className="fin-amount" style={{ color: 'var(--accent-red)' }}>
+                      ${totalExpense.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </h4>
                   </div>
                 </div>
                 <div className="fin-stat net">
-                  <div className="fin-icon-wrapper"><Activity size={20} /></div>
+                  <div className="fin-icon-wrapper"><DollarSign size={20} /></div>
                   <div className="fin-details">
                     <span className="fin-label">Net Profit</span>
-                    <h4 className="fin-amount">$3,279.50</h4>
+                    <h4 className="fin-amount" style={{ color: netProfit >= 0 ? 'var(--accent-cyan)' : 'var(--accent-red)' }}>
+                      ${netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -396,6 +499,62 @@ function App() {
                  }
               }
               setFishInventory(fishInventory.map(f => f.id === updatedFish.id ? updatedFish : f));
+            }}
+          />
+        )}
+
+        {activeTab === 'finance' && (
+          <FinancePage 
+            inventory={fishInventory}
+            transactions={transactions}
+            onAddTransaction={(t) => {
+              addLog('CREATE', 'Financials', `Recorded ${t.type} of $${t.amount} under ${t.category}`);
+              setTransactions(prev => [t, ...prev]);
+            }}
+            onUpdateTransaction={(updated) => {
+              addLog('UPDATE', 'Financials', `Updated transaction details for category ${updated.category}`);
+              setTransactions(prev => prev.map(t => t.id === updated.id ? updated : t));
+            }}
+            onDeleteTransaction={(id) => {
+              const target = transactions.find(t => t.id === id);
+              if (target) addLog('DELETE', 'Financials', `Deleted transaction of $${target.amount} (${target.category})`);
+              setTransactions(prev => prev.filter(t => t.id !== id));
+            }}
+          />
+        )}
+
+        {activeTab === 'comments' && (
+          <CommentsPage 
+            comments={comments}
+            onAddComment={(newComment) => {
+              addLog('CREATE', 'Comments', `Client submitted feedback topic: "${newComment.subject}"`);
+              setComments(prev => [newComment, ...prev]);
+            }}
+            onDeleteComment={(id) => {
+              const target = comments.find(c => c.id === id);
+              if (target) {
+                addLog('DELETE', 'Comments', `Client deleted feedback topic: "${target.subject}"`);
+                setComments(prev => prev.map(c => c.id === id ? { ...c, deletedByClient: true } : c));
+              }
+            }}
+            onAddReply={(commentId, reply) => {
+              const target = comments.find(c => c.id === commentId);
+              if (target) addLog('CREATE', 'Comments', `Admin published response to issue: "${target.subject}"`);
+              setComments(prev => prev.map(c => {
+                if (c.id === commentId) {
+                  return {
+                    ...c,
+                    status: 'Replied',
+                    replies: [...c.replies, reply]
+                  };
+                }
+                return c;
+              }));
+            }}
+            onResolveComment={(id, newStatus) => {
+              const target = comments.find(c => c.id === id);
+              if (target) addLog('UPDATE', 'Comments', `Marked issue "${target.subject}" as ${newStatus}`);
+              setComments(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
             }}
           />
         )}
