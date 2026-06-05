@@ -140,7 +140,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
       </div>
 
       {/* P&L Cards Row */}
-      <div className="grid grid-cols-4" style={{ marginBottom: '24px' }}>
+      <div className="grid grid-cols-4" style={{ marginBottom: '12px', gap: '12px' }}>
         
         {/* Total Income */}
         <div className="card stat-card">
@@ -210,7 +210,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
 
       {/* Record Transaction Form (Slide down / Show when clicked) */}
       {showAddForm && (
-        <div className="card" style={{ marginBottom: '24px', border: '1px solid var(--accent-cyan)' }}>
+        <div className="card" style={{ marginBottom: '12px', border: '1px solid var(--accent-cyan)' }}>
           <div className="card-header">
             <h3 className="card-title">Record New Transaction</h3>
           </div>
@@ -319,10 +319,10 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
       )}
 
       {/* Main Grid: Visuals + Ledger */}
-      <div className="main-grid">
+      <div className="main-grid" style={{ gridTemplateColumns: '1fr 2.5fr', gap: '16px' }}>
         
         {/* Left Column: Visual breakdown and ROI calculator */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           
           {/* Expense breakdown chart card */}
           <div className="card">
@@ -426,16 +426,16 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
         </div>
 
         {/* Right Column: Transaction Ledger */}
-        <div className="card" style={{ flex: 1 }}>
-          <div className="card-header" style={{ marginBottom: '16px' }}>
+        <div className="card" style={{ flex: 1, padding: '16px' }}>
+          <div className="card-header" style={{ marginBottom: '12px' }}>
             <h3 className="card-title">Transaction Ledger</h3>
             <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
               Showing {transactions.length} record{transactions.length !== 1 && 's'}
             </span>
           </div>
 
-          <div className="table-wrapper">
-            <table>
+          <div className="table-wrapper" style={{ maxHeight: '55vh', overflowY: 'auto' }}>
+            <table style={{ fontSize: '12px' }}>
               <thead>
                 <tr>
                   <th>Date</th>
@@ -531,17 +531,14 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                     ) : (
                       // Regular Display Row
                       <>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-                            <Calendar size={14} />
-                            <span>{t.date}</span>
-                          </div>
+                        <td style={{ padding: '6px' }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>{t.date}</span>
                         </td>
-                        <td>
+                        <td style={{ padding: '6px' }}>
                           <span style={{ 
-                            fontSize: '11px', 
+                            fontSize: '10px', 
                             fontWeight: '700', 
-                            padding: '3px 8px', 
+                            padding: '2px 6px', 
                             borderRadius: '4px', 
                             background: t.type === 'INCOME' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
                             color: t.type === 'INCOME' ? 'var(--accent-green)' : 'var(--accent-red)'
@@ -549,27 +546,24 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                             {t.type}
                           </span>
                         </td>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>
-                            <Tag size={13} style={{ color: 'var(--text-muted)' }} />
-                            <span>{t.category}</span>
-                          </div>
+                        <td style={{ padding: '6px', fontWeight: '500' }}>
+                          {t.category}
                         </td>
-                        <td>
-                          <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>{t.description || '-'}</span>
+                        <td style={{ padding: '6px' }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>{t.description || '-'}</span>
                         </td>
-                        <td>
-                          <span style={{ color: 'var(--text-muted)', fontSize: '13px', fontStyle: 'italic' }}>{t.comment || '-'}</span>
+                        <td style={{ padding: '6px' }}>
+                          <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{t.comment || '-'}</span>
                         </td>
-                        <td>
+                        <td style={{ padding: '6px' }}>
                           <span style={{ fontWeight: '600', color: t.type === 'INCOME' ? 'var(--accent-green)' : 'var(--text-primary)' }}>
                             {t.type === 'INCOME' ? '+' : '-'}${parseFloat(t.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
                         </td>
-                        <td>
-                          <div style={{ display: 'flex', gap: '8px' }}>
-                            <button onClick={() => handleStartEdit(t)} title="Edit" style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer' }}><Edit2 size={15} /></button>
-                            <button onClick={() => onDeleteTransaction(t.id)} title="Delete" style={{ background: 'none', border: 'none', color: 'var(--accent-red)', cursor: 'pointer' }}><Trash2 size={15} /></button>
+                        <td style={{ padding: '6px' }}>
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <button onClick={() => handleStartEdit(t)} title="Edit" style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer' }}><Edit2 size={13} /></button>
+                            <button onClick={() => onDeleteTransaction(t.id)} title="Delete" style={{ background: 'none', border: 'none', color: 'var(--accent-red)', cursor: 'pointer' }}><Trash2 size={13} /></button>
                           </div>
                         </td>
                       </>

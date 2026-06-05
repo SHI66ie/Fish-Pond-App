@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
 router.use('/fish', require('./routes/fish'));
 router.use('/feeding', require('./routes/feeding'));
 // router.use('/auth', require('./routes/auth'));
-// router.use('/ponds', require('./routes/ponds'));
+router.use('/ponds', require('./routes/ponds'));
 router.use('/transactions', require('./routes/transactions'));
 
 // Use the router with a base path for Netlify Functions or local development

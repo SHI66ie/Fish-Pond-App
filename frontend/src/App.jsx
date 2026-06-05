@@ -12,6 +12,7 @@ import SettingsPage from './components/SettingsPage';
 import ActivityLogPage from './components/ActivityLogPage';
 import FinancePage from './components/FinancePage';
 import CommentsPage from './components/CommentsPage';
+import WaterSensorsPage from './components/WaterSensorsPage';
 import './App.css';
 
 function App() {
@@ -521,6 +522,10 @@ function App() {
               setTransactions(prev => prev.filter(t => t.id !== id));
             }}
           />
+        )}
+
+        {activeTab === 'water' && (
+          <WaterSensorsPage inventory={fishInventory} />
         )}
 
         {activeTab === 'comments' && (
