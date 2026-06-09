@@ -28,6 +28,9 @@ router.use('/feeding', require('./routes/feeding'));
 // router.use('/auth', require('./routes/auth'));
 router.use('/ponds', require('./routes/ponds'));
 router.use('/transactions', require('./routes/transactions'));
+router.use('/harvest', require('./routes/harvest'));
+router.use('/inventory', require('./routes/inventory'));
+router.use('/sensors', require('./routes/sensors'));
 
 // Use the router with a base path for Netlify Functions or local development
 app.use('/api', router);

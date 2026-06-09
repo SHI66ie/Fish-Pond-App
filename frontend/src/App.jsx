@@ -3,7 +3,7 @@ import {
   Droplet, Thermometer, Activity, Settings, LayoutDashboard, 
   Fish, Bell, Search, Waves, CalendarClock, AlertTriangle, 
   Info, ArrowUpRight, ArrowDownRight, Wind, TrendingUp, TrendingDown,
-  Edit2, Save, X, MoreHorizontal, ChevronLeft, Sun, Moon, DollarSign, MessageSquare
+  Edit2, Save, X, MoreHorizontal, ChevronLeft, Sun, Moon, DollarSign, MessageSquare, Package
 } from 'lucide-react';
 import FishEditPage from './components/FishEditPage';
 import FishInventoryPage from './components/FishInventoryPage';
@@ -13,6 +13,8 @@ import ActivityLogPage from './components/ActivityLogPage';
 import FinancePage from './components/FinancePage';
 import CommentsPage from './components/CommentsPage';
 import WaterSensorsPage from './components/WaterSensorsPage';
+import HarvestPage from './components/HarvestPage';
+import PostHarvestPage from './components/PostHarvestPage';
 import './App.css';
 
 function App() {
@@ -172,6 +174,8 @@ function App() {
     { id: 'fish', label: 'Fish Inventory', icon: <Fish /> },
     { id: 'finance', label: 'Finance & P&L', icon: <DollarSign /> },
     { id: 'water', label: 'Water Sensors', icon: <Waves /> },
+    { id: 'harvest', label: 'Harvesting', icon: <Fish /> },
+    { id: 'postharvest', label: 'Post-Harvest', icon: <Package /> },
     { id: 'feed', label: 'Feeding Schedule', icon: <CalendarClock /> },
     { id: 'comments', label: 'Client Feedback', icon: <MessageSquare /> },
     { id: 'logs', label: 'Activity Logs', icon: <Activity /> },
@@ -526,6 +530,14 @@ function App() {
 
         {activeTab === 'water' && (
           <WaterSensorsPage inventory={fishInventory} />
+        )}
+
+        {activeTab === 'harvest' && (
+          <HarvestPage />
+        )}
+
+        {activeTab === 'postharvest' && (
+          <PostHarvestPage />
         )}
 
         {activeTab === 'comments' && (

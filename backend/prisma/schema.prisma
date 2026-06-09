@@ -25,6 +25,7 @@ model Pond {
   updatedAt   DateTime @updatedAt
   fishStock   FishStock[]
   transactions Transaction[]
+  waterSensorLogs WaterSensorLog[]
 }
 
 model FishSpecies {
@@ -55,6 +56,7 @@ model FishStock {
 
   @@index([pondId])
   @@index([speciesId])
+  harvests     Harvest[]
 }
 
 model Feeding {
@@ -94,6 +96,46 @@ model Transaction {
   pond        Pond?    @relation(fields: [pondId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([pondId])
+}
+
+model Harvest {
+  id              String   @id @default(uuid())
+  fishStockId     String
+  harvestDate     DateTime @default(now())
+  totalWeightKg   Float
+  fishCount       Int
+  qualityNotes    String?
+  fishStock       FishStock @relation(fields: [fishStockId], references: [id])
+  postHarvestInv  PostHarvestInventory[]
+
+  @@index([fishStockId])
+}
+
+model PostHarvestInventory {
+  id              String   @id @default(uuid())
+  harvestId       String?
+  productType     String   // e.g., Whole, Fillet, Smoked
+  quantityKg      Float
+  lotNumber       String?
+  pricePerKg      Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  harvest         Harvest? @relation(fields: [harvestId], references: [id])
+
+  @@index([harvestId])
+}
+
+model WaterSensorLog {
+  id              String   @id @default(uuid())
+  pondId          String
+  temperature     Float?
+  ph              Float?
+  dissolvedOxygen Float?
+  ammonia         Float?
+  timestamp       DateTime @default(now())
+  pond            Pond     @relation(fields: [pondId], references: [id], onDelete: Cascade)
 
   @@index([pondId])
 }
