@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Package, Flame, Sun, Search, Plus, Filter, FileText, ArrowRight, CheckCircle2, TrendingUp, DollarSign } from 'lucide-react';
 
-export default function PostHarvestPage({ inventory = [], onSell, onAdd }) {
+export default function PostHarvestPage({ inventory = [], onSell, onAdd, currency = '#' }) {
   const [activeTab, setActiveTab] = useState('processing');
   
   return (
@@ -215,14 +215,14 @@ export default function PostHarvestPage({ inventory = [], onSell, onAdd }) {
                  <span className="stat-title">Total Sales This Month</span>
                  <DollarSign size={20} color="var(--accent-green)" />
                </div>
-               <div className="stat-value">$8,450.00</div>
+               <div className="stat-value">{currency}8,450.00</div>
             </div>
             <div className="card stat-card" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
                <div className="stat-header">
                  <span className="stat-title">Smoked Fish Revenue</span>
                  <Flame size={20} color="var(--accent-orange)" />
                </div>
-               <div className="stat-value">$2,100.00</div>
+               <div className="stat-value">{currency}2,100.00</div>
             </div>
             <div className="card stat-card" style={{ borderLeft: '4px solid var(--accent-cyan)' }}>
                <div className="stat-header">
@@ -264,7 +264,7 @@ export default function PostHarvestPage({ inventory = [], onSell, onAdd }) {
                   <td style={{ padding: '12px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}><Flame size={14} color="var(--accent-orange)"/> Smoked Catfish</td>
                   <td style={{ padding: '12px 8px' }}>Local Market Vendor</td>
                   <td style={{ padding: '12px 8px' }}>10 kg</td>
-                  <td style={{ padding: '12px 8px', color: 'var(--accent-green)', fontWeight: 'bold' }}>$250.00</td>
+                  <td style={{ padding: '12px 8px', color: 'var(--accent-green)', fontWeight: 'bold' }}>{currency}250.00</td>
                   <td style={{ padding: '12px 8px' }}><span style={{ padding: '2px 8px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-green)', borderRadius: '12px', fontSize: '11px' }}>Completed</span></td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -272,7 +272,7 @@ export default function PostHarvestPage({ inventory = [], onSell, onAdd }) {
                   <td style={{ padding: '12px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}><Sun size={14} color="var(--accent-yellow)"/> Sun-Dried Tilapia</td>
                   <td style={{ padding: '12px 8px' }}>Export Partner A</td>
                   <td style={{ padding: '12px 8px' }}>50 kg</td>
-                  <td style={{ padding: '12px 8px', color: 'var(--accent-green)', fontWeight: 'bold' }}>$800.00</td>
+                  <td style={{ padding: '12px 8px', color: 'var(--accent-green)', fontWeight: 'bold' }}>{currency}800.00</td>
                   <td style={{ padding: '12px 8px' }}><span style={{ padding: '2px 8px', background: 'rgba(250, 204, 21, 0.1)', color: 'var(--accent-yellow)', borderRadius: '12px', fontSize: '11px' }}>Pending Delivery</span></td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -280,7 +280,7 @@ export default function PostHarvestPage({ inventory = [], onSell, onAdd }) {
                   <td style={{ padding: '12px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}><Package size={14} color="var(--accent-cyan)"/> Whole Frozen Koi</td>
                   <td style={{ padding: '12px 8px' }}>Distributor West</td>
                   <td style={{ padding: '12px 8px' }}>200 kg</td>
-                  <td style={{ padding: '12px 8px', color: 'var(--accent-green)', fontWeight: 'bold' }}>$1,200.00</td>
+                  <td style={{ padding: '12px 8px', color: 'var(--accent-green)', fontWeight: 'bold' }}>{currency}1,200.00</td>
                   <td style={{ padding: '12px 8px' }}><span style={{ padding: '2px 8px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-green)', borderRadius: '12px', fontSize: '11px' }}>Completed</span></td>
                 </tr>
               </tbody>

@@ -4,7 +4,7 @@ import {
   Percent, Calendar, Tag, ChevronDown, Check, X, Scale, HelpCircle 
 } from 'lucide-react';
 
-const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransaction, onDeleteTransaction }) => {
+const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransaction, onDeleteTransaction, currency = '#' }) => {
   // Local form states
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTrans, setNewTrans] = useState({
@@ -152,7 +152,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
           </div>
           <div style={{ marginTop: '12px' }}>
             <div className="stat-value" style={{ color: 'var(--accent-green)' }}>
-              ${totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {currency}{totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>Cash inflow transactions</div>
           </div>
@@ -168,7 +168,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
           </div>
           <div style={{ marginTop: '12px' }}>
             <div className="stat-value" style={{ color: 'var(--accent-red)' }}>
-              ${totalExpense.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {currency}{totalExpense.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>Operational outflows</div>
           </div>
@@ -184,7 +184,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
           </div>
           <div style={{ marginTop: '12px' }}>
             <div className="stat-value" style={{ color: netProfit >= 0 ? 'var(--accent-cyan)' : 'var(--accent-red)' }}>
-              ${netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {currency}{netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>Net operating income</div>
           </div>
@@ -254,7 +254,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <label style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Amount ($)</label>
+              <label style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Amount ({currency})</label>
               <input
                 type="number"
                 step="0.01"
@@ -343,7 +343,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                       <span style={{ color: 'var(--text-primary)', fontWeight: '500' }}>{cat}</span>
                       <span style={{ color: 'var(--text-secondary)' }}>
-                        ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({percentage}%)
+                        {currency}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({percentage}%)
                       </span>
                     </div>
                     {/* Native progress bar using absolute styling for maximum control */}
@@ -388,8 +388,8 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Market Price ($ per kg)</span>
-                  <span style={{ color: 'var(--accent-purple)', fontWeight: '600' }}>${marketPrice.toFixed(2)} / kg</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>Market Price ({currency} per kg)</span>
+                  <span style={{ color: 'var(--accent-purple)', fontWeight: '600' }}>{currency}{marketPrice.toFixed(2)} / kg</span>
                 </div>
                 <input 
                   type="range" 
@@ -401,9 +401,9 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                   style={{ width: '100%', accentColor: 'var(--accent-purple)', background: 'var(--bg-base)' }}
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted)' }}>
-                  <span>$1.00</span>
-                  <span>$4.50 (Tilapia Avg)</span>
-                  <span>$12.00 (Premium Koi)</span>
+                  <span>{currency}1.00</span>
+                  <span>{currency}4.50 (Tilapia Avg)</span>
+                  <span>{currency}12.00 (Premium Koi)</span>
                 </div>
               </div>
             </div>
@@ -413,7 +413,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                 <div>
                   <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Est. Harvest Gross Value</span>
                   <h2 style={{ color: 'var(--accent-purple)', fontSize: '24px', fontWeight: '700', margin: '4px 0 0 0' }}>
-                    ${projectedROI.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {currency}{projectedROI.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </h2>
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'right', maxWidth: '140px' }}>
@@ -557,7 +557,7 @@ const FinancePage = ({ inventory, transactions, onAddTransaction, onUpdateTransa
                         </td>
                         <td style={{ padding: '6px' }}>
                           <span style={{ fontWeight: '600', color: t.type === 'INCOME' ? 'var(--accent-green)' : 'var(--text-primary)' }}>
-                            {t.type === 'INCOME' ? '+' : '-'}${parseFloat(t.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            {t.type === 'INCOME' ? '+' : '-'}{currency}{parseFloat(t.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
                         </td>
                         <td style={{ padding: '6px' }}>

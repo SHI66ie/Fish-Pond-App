@@ -26,6 +26,12 @@ function App() {
     localStorage.setItem('aquapond-theme', theme);
   }, [theme]);
 
+  const [currency, setCurrency] = useState(() => localStorage.getItem('aquapond-currency') || '#');
+
+  useEffect(() => {
+    localStorage.setItem('aquapond-currency', currency);
+  }, [currency]);
+
   const [auditLogs, setAuditLogs] = useState(() => {
     const saved = localStorage.getItem('aquapond-audit-logs');
     return saved ? JSON.parse(saved) : [];
@@ -312,7 +318,7 @@ function App() {
                   <div className="fin-details">
                     <span className="fin-label">Total Income</span>
                     <h4 className="fin-amount" style={{ color: 'var(--accent-green)' }}>
-                      ${totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {currency}{totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </h4>
                   </div>
                 </div>
@@ -321,7 +327,7 @@ function App() {
                   <div className="fin-details">
                     <span className="fin-label">Total Expenses</span>
                     <h4 className="fin-amount" style={{ color: 'var(--accent-red)' }}>
-                      ${totalExpense.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {currency}{totalExpense.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </h4>
                   </div>
                 </div>
@@ -330,7 +336,7 @@ function App() {
                   <div className="fin-details">
                     <span className="fin-label">Net Profit</span>
                     <h4 className="fin-amount" style={{ color: netProfit >= 0 ? 'var(--accent-cyan)' : 'var(--accent-red)' }}>
-                      ${netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {currency}{netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </h4>
                   </div>
                 </div>
@@ -512,8 +518,9 @@ function App() {
           <FinancePage 
             inventory={fishInventory}
             transactions={transactions}
+            currency={currency}
             onAddTransaction={(t) => {
-              addLog('CREATE', 'Financials', `Recorded ${t.type} of $${t.amount} under ${t.category}`);
+              addLog('CREATE', 'Financials', `Recorded ${t.type} of ${currency}${t.amount} under ${t.category}`);
               setTransactions(prev => [t, ...prev]);
             }}
             onUpdateTransaction={(updated) => {
@@ -522,7 +529,7 @@ function App() {
             }}
             onDeleteTransaction={(id) => {
               const target = transactions.find(t => t.id === id);
-              if (target) addLog('DELETE', 'Financials', `Deleted transaction of $${target.amount} (${target.category})`);
+              if (target) addLog('DELETE', 'Financials', `Deleted transaction of ${currency}${target.amount} (${target.category})`);
               setTransactions(prev => prev.filter(t => t.id !== id));
             }}
           />
@@ -537,7 +544,7 @@ function App() {
         )}
 
         {activeTab === 'postharvest' && (
-          <PostHarvestPage />
+          <PostHarvestPage currency={currency} />
         )}
 
         {activeTab === 'comments' && (
@@ -584,6 +591,8 @@ function App() {
           <SettingsPage 
             theme={theme}
             onThemeChange={setTheme}
+            currency={currency}
+            onCurrencyChange={setCurrency}
           />
         )}
       </main>

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Sun, Moon, Monitor, Settings } from 'lucide-react';
+import { Sun, Moon, Monitor, Settings, DollarSign } from 'lucide-react';
 
-const SettingsPage = ({ theme, onThemeChange }) => {
+const SettingsPage = ({ theme, onThemeChange, currency, onCurrencyChange }) => {
   return (
     <div className="dashboard-content settings-page">
       <div className="dashboard-header">
@@ -82,6 +82,36 @@ const SettingsPage = ({ theme, onThemeChange }) => {
           </div>
           <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)' }}>
             More settings coming soon!
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <DollarSign size={20} style={{ color: 'var(--accent-green)' }} /> Regional Settings
+            </h3>
+          </div>
+          <div style={{ padding: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '300px' }}>
+              <label style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Currency Symbol</label>
+              <input 
+                type="text" 
+                value={currency}
+                onChange={(e) => onCurrencyChange(e.target.value)}
+                maxLength={3}
+                style={{
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-color)',
+                  background: 'var(--bg-surface-elevated)',
+                  color: 'white',
+                  fontSize: '16px'
+                }}
+              />
+              <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
+                Used across all financial dashboards. Examples: $, €, £, ¥, ₦, #
+              </p>
+            </div>
           </div>
         </div>
       </div>
