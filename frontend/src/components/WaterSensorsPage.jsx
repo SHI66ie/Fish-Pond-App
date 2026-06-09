@@ -206,7 +206,7 @@ const WaterSensorsPage = ({ inventory }) => {
           <div className="card" style={{ background: uiaToxic ? 'rgba(239, 68, 68, 0.05)' : 'var(--bg-surface)', border: uiaToxic ? '1px solid var(--accent-red)' : '1px solid rgba(16, 185, 129, 0.2)' }}>
             <div className="card-header" style={{ marginBottom: '12px' }}>
               <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <FlaskConical size={18} color={uiaToxic ? "var(--accent-red)" : "var(--accent-green)"}/> 
+                <FlaskConical size={18} color={uiaToxic ? "var(--accent-red)" : "var(--accent-green)"}/>
                 UIA Toxicity Engine
               </h3>
             </div>
@@ -230,7 +230,7 @@ const WaterSensorsPage = ({ inventory }) => {
             {uiaToxic ? (
               <div style={{ fontSize: '12px', color: '#ffb3b3', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
                 <AlertTriangle size={14} style={{ flexShrink: 0, marginTop: '2px' }}/>
-                Lethal limits exceeded (>0.05 mg/L). Fish gill damage is actively occurring.
+                Lethal limits exceeded (&gt;0.05 mg/L). Fish gill damage is actively occurring.
               </div>
             ) : (
               <div style={{ fontSize: '12px', color: 'var(--accent-green)', display: 'flex', gap: '6px', alignItems: 'center' }}>
